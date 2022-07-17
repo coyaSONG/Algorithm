@@ -1,9 +1,8 @@
-import java.io.*;
 import java.lang.*;
 import java.util.*;
 
 
-public class main {
+public class 문제2G {
 	public static final Scanner scanner = new Scanner(System.in);
 
 	public static void bubbleSort(int[] data, int n)
