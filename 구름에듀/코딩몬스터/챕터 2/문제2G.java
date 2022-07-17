@@ -3,7 +3,7 @@ import java.lang.*;
 import java.util.*;
 
 
-public class Main {
+public class main {
 	public static final Scanner scanner = new Scanner(System.in);
 
 	public static void bubbleSort(int[] data, int n)
