@@ -25,11 +25,13 @@ jobs:
           set -euo pipefail
           work="$(mktemp -d)"
           while IFS= read -r -d '' file; do
-            class_name="$(sed -nE 's/.*public class ([[:alnum:]_가-힣]+).*/\1/p' "$file" | head -1)"
-            test -n "$class_name"
+            if grep -q 'public class Main' "$file"; then
+              class_name=Main
+            else
+              class_name="$(basename "$file" .java)"
+            fi
             rm -rf "$work/src" "$work/out"
             mkdir -p "$work/src" "$work/out"
             cp "$file" "$work/src/$class_name.java"
             javac -encoding UTF-8 -d "$work/out" "$work/src/$class_name.java"
           done < <(find . -name '*.java' -print0)
-
