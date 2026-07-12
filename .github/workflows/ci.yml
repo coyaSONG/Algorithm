@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Compile each solution
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$(mktemp -d)"
+          while IFS= read -r -d '' file; do
+            class_name="$(sed -nE 's/.*public class ([[:alnum:]_가-힣]+).*/\1/p' "$file" | head -1)"
+            test -n "$class_name"
+            rm -rf "$work/src" "$work/out"
+            mkdir -p "$work/src" "$work/out"
+            cp "$file" "$work/src/$class_name.java"
+            javac -encoding UTF-8 -d "$work/out" "$work/src/$class_name.java"
+          done < <(find . -name '*.java' -print0)
+
